@@ -1,0 +1,100 @@
+// 참고 : https://velog.io/@hwsa1004/Spring-restdocs-swagger-%EA%B0%99%EC%9D%B4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
+
+    // restdocs + swagger
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.epages.restdocs-api-spec' version '0.19.0'
+    id 'org.hidetake.swagger.generator' version '2.19.2'
+
+}
+
+group = 'com.restdocs'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // restdocs + swagger
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.0'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    swaggerUI 'org.webjars:swagger-ui:5.10.3'
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// restdocs + swagger
+swaggerSources {
+    sample {
+        setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+    }
+}
+
+// restdocs + swagger
+openapi3 {
+    servers = [
+            {
+                url = "http://localhost:8080"
+                description = "local"
+            },
+            {
+                url = "https://prodServer:8119"
+                description = "prod"
+            }
+    ]
+    title = "restdocs-swagger API Documentation"
+    description = "Spring REST Docs with SwaggerUI"
+    version = "0.0.1"
+    format = "yaml"
+}
+
+// restdocs + swagger
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
+/*
+        def securitySchemesContent =  "  securitySchemes:\n" +  \
+                                      "    APIKey:\n" +  \
+                                      "      type: apiKey\n" +  \
+                                      "      name: Authorization\n" +  \
+                                      "      in: header\n" + \
+                                      "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
+
+        swaggerUIFile.append securitySchemesContent*/
+    }
+}
+
+// restdocs + swagger
+bootJar {
+    dependsOn generateSwaggerUISample
+    from("${generateSwaggerUISample.outputDir}") {
+        into 'static/docs'
+    }
+}
