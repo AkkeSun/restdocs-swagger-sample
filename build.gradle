@@ -5,10 +5,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 
     // restdocs + swagger
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'com.epages.restdocs-api-spec' version '0.19.0'
     id 'org.hidetake.swagger.generator' version '2.19.2'
-
 }
 
 group = 'com.restdocs'
@@ -27,7 +25,6 @@ configurations {
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -67,10 +64,11 @@ openapi3 {
                 description = "prod"
             }
     ]
-    title = "restdocs-swagger API Documentation"
-    description = "Spring REST Docs with SwaggerUI"
+    title = "restdocs test"
+    description = "restdocs + swagger 테스트"
     version = "0.0.1"
     format = "yaml"
+    outputDirectory = "src/main/resources/static/docs"
 }
 
 // restdocs + swagger

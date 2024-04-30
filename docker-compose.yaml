@@ -1,0 +1,12 @@
+version: "3"
+services:
+  swagger:
+    container_name: local-swagger
+    image: swaggerapi/swagger-ui
+    environment:
+      - URLS_PRIMARY_NAME=mobile-backend
+      - "URLS=[
+          { url: 'http://localhost:8080/docs/openapi3.yaml', name: 'mobile-backend' }
+        ]"
+    ports:
+      - "8090:8080"
