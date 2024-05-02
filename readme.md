@@ -9,5 +9,5 @@
 
 ### API 문서 작성 방법
 1. API 문서 작성을 위한 테스트코드를 작성합니다
-2. 서비스를 build 합니다
-3. build 한 파일을 실행한후 {host}/docs/index.html 에 접속합니다
+2. 서비스를 build 하여 OSA 파일 (openapi.yaml) 을 생성합니다.
+3. docker 파일을 실행합니다.
