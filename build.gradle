@@ -37,7 +37,6 @@ dependencies {
     // restdocs + swagger
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.0'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    swaggerUI 'org.webjars:swagger-ui:5.10.3'
 }
 
 
@@ -68,31 +67,13 @@ openapi3 {
     description = "restdocs + swagger 테스트"
     version = "0.0.1"
     format = "yaml"
+    // outputFileNamePrefix = System.getenv().getOrDefault('boundedContext', 'openapi3')
+    // boundedContext=invoice ./gradlew clean build test --tests 'com.sweettracker.mobilebackend.invoice.*’
     outputDirectory = "src/main/resources/static/docs"
 }
 
-// restdocs + swagger
-tasks.withType(GenerateSwaggerUI) {
-    dependsOn 'openapi3'
-    doFirst {
-        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
-/*
-        def securitySchemesContent =  "  securitySchemes:\n" +  \
-                                      "    APIKey:\n" +  \
-                                      "      type: apiKey\n" +  \
-                                      "      name: Authorization\n" +  \
-                                      "      in: header\n" + \
-                                      "security:\n" +
-                "  - APIKey: []  # Apply the security scheme here"
-
-        swaggerUIFile.append securitySchemesContent*/
-    }
-}
 
 // restdocs + swagger
 bootJar {
-    dependsOn generateSwaggerUISample
-    from("${generateSwaggerUISample.outputDir}") {
-        into 'static/docs'
-    }
+    dependsOn 'openapi3'
 }
